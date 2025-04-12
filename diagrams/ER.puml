@@ -1,0 +1,58 @@
+@startuml
+title Warmhous ER Диаграмма
+
+entity "Пользователь" as user {
+  +id: INT
+  +name: VARCHAR
+  +email: VARCHAR
+  +password: VARCHAR
+}
+
+entity "Дом" as home {
+  +id: INT
+  +name: VARCHAR
+  +location: VARCHAR
+  +user_id: INT <<FK>>
+}
+
+entity "Устройство" as device {
+  +id: INT
+  +name: VARCHAR
+  +home_id: INT <<FK>>
+  +device_type_id: INT <<FK>>
+}
+
+entity "Тип устройства" as device_type {
+  +id: INT
+  +name: VARCHAR
+}
+
+entity "Сценарий устройства" as device_scenario {
+  +id: INT
+  +device_id: INT <<FK>>
+  +params: JSON
+}
+
+entity "Телеметрия" as telemetry {
+  +id: INT
+  +device_id: INT <<FK>>
+  +value: FLOAT
+  +timestamp: DATETIME
+}
+
+entity "История изменения состояния" as scenario_history {
+  +id: INT
+  +device_id: INT <<FK>>
+  +scenario_id: INT <<FK>>
+  +execution_time: DATETIME
+  +result: VARCHAR
+}
+
+user ||--|| home
+home ||--o| device
+device ||--|| device_type
+device ||--o| device_scenario
+device ||--o| telemetry
+device_scenario ||--o| scenario_history
+
+@enduml
