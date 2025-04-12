@@ -1,0 +1,22 @@
+@startuml
+title SmartHomeMonolith Диаграмма Контекста
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(user, "Пользователь", "Пользователь системы")
+Person(specialist, "Технический специалист", "Специалист подключения системы отопления")
+System(smartHomeSystem, "SmartHome System", "Система мониторинга температуры и управления отоплением")
+
+System_Ext(temperatureSensors, "Датчики температуры", "Датчики измерения температуры в доме")
+System_Ext(heatingControl, "Система отопления", "Компоненты управления состоянием отопления")
+
+Rel(user, smartHomeSystem, "Проверка температуры")
+Rel(user, smartHomeSystem, "Включение/выключение отопления")
+Rel(user, smartHomeSystem, "Задание целевой температуры отопления")
+Rel(specialist, smartHomeSystem, "Регистрация датчиков системы отопления")
+Rel(smartHomeSystem, temperatureSensors, "Получение температуры")
+Rel(smartHomeSystem, heatingControl, "Управление отоплением")
+
+@enduml
