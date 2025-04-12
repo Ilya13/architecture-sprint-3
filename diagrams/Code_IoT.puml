@@ -1,0 +1,34 @@
+@startuml
+title Warmhous Диаграмма кода Умного устройства
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+class Device {
+  +String name
+  +String type
+  +int user
+  +List<Scenario> scenarios
+  +void register()
+  +void delete()
+}
+
+class Scenario {
+  +String type
+  +String state
+  +Date startDate
+  +Date endDate
+  +double targetValue
+  +void activate()
+  +void cancel()
+}
+
+class KafkaProducer {
+  +void sendMessage(String message)
+}
+
+Device "1" -- "0..*" Scenario : has
+Scenario "1" -- "0..*" KafkaProducer : includes
+
+@enduml

@@ -1,0 +1,45 @@
+@startuml
+title Warmhous Диаграмма Компонента Сервиса данных состояния умного дома
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+top to bottom direction
+
+Container_Boundary(IoTService, "Сервис данных состояния умного дома") {
+  Container(WebApp, "API Application", "Java, Spring Boot", "Управление состоянием Умного дома")
+  Container(Database, "Database", "PostgreSQL", "Хранение данных состояния умного дома")
+}
+
+Container(WebApp, "REST API", "Java, Spring Boot") {
+  Component(RegisterController, "RegisterController", "Регистрация умных устройств")
+  Component(StateController, "StateController", "Получение состояния устройства и задание сценариев")
+  Component(SupportController, "SupportController", "Методы тех. поддержки")
+
+  Component(DeviceRepositoryLayer, "Device Repository Layer", "Слой взаимодействия с БД")
+  Component(StateRepositoryLayer, "State Repository Layer", "Слой взаимодействия с БД")
+
+  Component(KafkaProducer, "KafkaProducer", "Сервис отправки сообщений в кафку")
+}
+
+System_Ext(WebPlatformBff, "Support Service BFF", "Подготовка данных для сотрудника тех. поддержки")
+System_Ext(SupportWebAppBff, "Web platform BFF", "Подготовка данных для Веб платформы Умны дом")
+Container_Ext(Kafka, "Kafka", "Kafka", "Брокер сообщений")
+
+Rel(WebPlatformBff, RegisterController, "Добавление устройства")
+Rel(WebPlatformBff, StateController, "Задание сценария для устройства")
+
+Rel(SupportWebAppBff, SupportController, "Получение состояния устройства")
+
+Rel(RegisterController, DeviceRepositoryLayer, "Добавление/Удаление устройства")
+Rel(StateController, StateRepositoryLayer, "Сохранение/Получения сценариев устройства")
+Rel(SupportController, DeviceRepositoryLayer, "Запрос устройств")
+Rel(SupportController, StateRepositoryLayer, "Получения сценариев устройства")
+
+Rel(DeviceRepositoryLayer, Database, "Чтение/запись данных")
+Rel(StateRepositoryLayer, Database, "Чтение/запись данных")
+
+Rel(DeviceRepositoryLayer, KafkaProducer, "Сообщение регистрации устройства")
+Rel(StateRepositoryLayer, KafkaProducer, "Сообщение задания сценария устройства")
+Rel(KafkaProducer, Kafka, "Отправка сообщений")
+
+@enduml

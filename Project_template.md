@@ -65,19 +65,23 @@
 
 # Задание 2. Проектирование микросервисной архитектуры
 
-В этом задании вам нужно предоставить только диаграммы в модели C4. Мы не просим вас отдельно описывать получившиеся микросервисы и то, как вы определили взаимодействия между компонентами To-Be системы. Если вы правильно подготовите диаграммы C4, они и так это покажут.
-
 **Диаграмма контейнеров (Containers)**
 
-Добавьте диаграмму.
+[Containers.puml](diagrams/Containers.puml)
+
+![Containers.png](diagrams/Containers.png)
 
 **Диаграмма компонентов (Components)**
 
-Добавьте диаграмму для каждого из выделенных микросервисов.
+[Component_IoTService.puml](diagrams/Component_IoTService.puml)
+
+![Component_IoTService.png](diagrams/Component_IoTService.png)
 
 **Диаграмма кода (Code)**
 
-Добавьте одну диаграмму или несколько.
+[Code_IoTService.puml](diagrams/Code_IoTService.puml)
+
+![Code_IoTService.png](diagrams/Code_IoTService.png)
 
 # Задание 3. Разработка ER-диаграммы
 
