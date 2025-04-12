@@ -1,0 +1,86 @@
+@startuml
+title Warmhous Диаграмма Контейнеров
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(User, "Пользователь", "Пользователь системы")
+Person(SupportSpecialist, "Специалист тех. поддержки", "Специалист предоставляющий поддержку пользователям")
+Person(AnalyticsSpecialist, "Маркетолог", "Специалист занимающийся продвижением новых модульных комплектов")
+
+System(SmartHomeSystem, "SmartHome System", "Система мониторинга и управления Умным Домом")
+
+Container_Boundary(SmartHomeSystem, "Умный Дом") {
+  Container(WebPlatform, "Web platform", "React", "Веб-платформа для подключения устройств, мониторинга и управления Умным домом")
+  Container(SupportWebApp, "Support Web Application", "React", "Веб приложение сотрудника тех. поддержки")
+  Container(AnalyticsWebApp, "Analytics Web Application", "React", "Веб приложение аналитических данных маркетолога")
+
+  Container(ApiGateway, "Api Gateway", "Kong", "Авторизация, маршрутизация, балансировка")
+
+  Container(WebPlatformBff, "Web platform BFF", "NestJs, Typescript", "Подготовка данных для Веб платформы Умны дом")
+  Container(AnalyticsWebAppBff, "Analytics Service BFF", "NestJs, Typescript", "Подготовка аналитических данных")
+  Container(SupportWebAppBff, "Support Service BFF", "NestJs, Typescript", "Подготовка данных для сотрудника тех. поддержки")
+  
+  Container(NotificationService, "Notification Service", "Java, Spring Boot", "Сервис уведомлений пользователей")
+
+  Container(AnalyticsService, "Analytics Service", "Java, Spring Boot", "Сервис аналитических данных")
+  ContainerDb(AnalyticsServiceDatabase, "Analytics Service Database", "PostgreSQL", "Хранение аналитических данных")
+
+  Container(AuthUsersService, "Users Auth Service", "Java, Spring Boot", "Сервис авторизации пользователей")
+  ContainerDb(AuthUsersServiceDatabase, "Users Auth Service Database", "PostgreSQL", "Хранение учетных данных пользователей")
+
+  Container(UsersService, "Users Service", "Java, Spring Boot", "Сервис персональных данных пользователя")
+  ContainerDb(UsersServiceDatabase, "User Service Database", "PostgreSQL", "Хранение персональных данных пользователя")
+
+  Container(AuthEmployeesService, "Employees Auth Service", "Keycloak", "Сервис авторизации и администрирования сотрудников")
+  
+  Container(IotService, "IoT Service", "Java, Spring Boot", "Сервис данных состояния умного дома")
+  ContainerDb(IotServiceDatabase, "IoT Service Database", "PostgreSQL", "Хранение данных состояния умного дома")
+
+  Container(DevicesService, "Devices Service", "Java, Spring Boot", "Сервис умных устройств")
+
+  Container(Kafka, "Kafka", "Kafka", "Брокер сообщений")
+}
+
+System_Ext(Devices, "Умные устройства", "Датчики и устройства управления")
+
+Rel(User, WebPlatform, "Пользуется системой")
+Rel(SupportSpecialist, SupportWebApp, "Осуществляет поддержку")
+Rel(AnalyticsSpecialist, AnalyticsWebApp, "Получает аналитические данные")
+Rel(NotificationService, User, "Уведомления")
+Rel(AnalyticsService, NotificationService, "Уведомления")
+
+Rel(WebPlatform, ApiGateway, "Запросы пользователя")
+Rel(SupportWebApp, ApiGateway, "Запросы тех. поддержки")
+Rel(AnalyticsWebApp, ApiGateway, "Запросы аналитических данных")
+
+Rel(ApiGateway, AnalyticsWebAppBff, "Запросы аналитических данных")
+Rel(ApiGateway, SupportWebAppBff, "Запросы тех. поддержки")
+Rel(ApiGateway, WebPlatformBff, "Запросы пользователя")
+
+Rel(WebPlatformBff, AuthUsersService, "Запросы авторизации")
+Rel(WebPlatformBff, UsersService, "Запросы данных")
+Rel(WebPlatformBff, IotService, "Управление состоянием")
+Rel(WebPlatformBff, DevicesService, "Регистрация умного устройства")
+
+Rel(SupportWebAppBff, AuthEmployeesService, "Запросы авторизации")
+Rel(SupportWebAppBff, UsersService, "Запросы данных")
+Rel(SupportWebAppBff, IotService, "Управление состоянием")
+
+Rel(AnalyticsWebAppBff, AuthEmployeesService, "Запросы авторизации")
+Rel(AnalyticsWebAppBff, AnalyticsService, "Запрос аналитических данных")
+
+Rel(DevicesService, Devices, "Запрос данных, передача состояния")
+
+Rel(AuthUsersService, Kafka, "Уведомления авторизации")
+Rel(AnalyticsService, Kafka, "Предупреждения нештатных ситуаций")
+Rel(IotService, Kafka, "Изменения состояния системы")
+Rel(DevicesService, Kafka, "Показания датчиков")
+
+Rel(AnalyticsService, AnalyticsServiceDatabase, "Чтение/запись данных")
+Rel(AuthUsersService, AuthUsersServiceDatabase, "Чтение/запись данных")
+Rel(UsersService, UsersServiceDatabase, "Чтение/запись данных")
+Rel(IotService, IotServiceDatabase, "Чтение/запись данных")
+
+@enduml
